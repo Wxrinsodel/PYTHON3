@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
 
 
-        screen.fill((0, 30, 0)) 
+        screen.fill((153, 204, 255)) 
 
 
         circle.move(vx, vy)
@@ -58,7 +58,7 @@ if __name__ == "__main__":
             vy = -vy
 
 
-        circle.draw(screen, (255, 0, 0))  
+        circle.draw(screen, (0, 0, 0))  
 
         pygame.display.flip()
 
