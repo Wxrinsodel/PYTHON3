@@ -45,13 +45,14 @@ if __name__ == "__main__":
 
 
 
-        screen.fill((0, 30, 0))  # Black background
+        screen.fill((0, 30, 0)) 
 
 
         circle.move(vx, vy)
 
+        #if circle go beyond radius, then stop it by those conditions
 
-        if circle.x - circle.radius < 0 or circle.x + circle.radius > window_width:
+        if circle.x - circle.radius < 0 or circle.x + circle.radius > window_width: 
             vx = -vx
         if circle.y - circle.radius < 0 or circle.y + circle.radius > window_height:
             vy = -vy
