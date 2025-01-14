@@ -1,68 +1,76 @@
 import pygame
 import sys
+import random
 
 class Circle:
-    def __init__(self, radius, x, y):
+    def __init__(self, radius, x, y, color):
         self.radius = radius
         self.x = x
         self.y = y
+        self.color = color
 
-    def draw(self, screen, color):
-        pygame.draw.circle(screen, color, (self.x, self.y), self.radius)
+    def draw(self, screen):
+        pygame.draw.circle(screen, self.color, (self.x, self.y), self.radius)
 
     def move(self, shift_x, shift_y):
         self.x += shift_x
         self.y += shift_y
 
 
-if __name__ == "__main__":
-    circle = Circle(10, 100, 100)
-    pygame.init()
+window_width = 500
+window_height = 400
 
 
-    window_width = 500
-    window_height = 400
-    circle.radius = 15
+pygame.init()
+screen = pygame.display.set_mode((window_width, window_height))
+pygame.display.set_caption("Bouncing Circles")
 
 
-    screen = pygame.display.set_mode((window_width, window_height))
-    pygame.display.set_caption("This circle is bouncing")
+bg_color = (37, 150, 190)
 
 
-    circle = Circle(circle.radius, window_width // 2, window_height // 2)
+num_circles = 20
+circles = []
+velocities = []
 
-    vx = 10
-    vy = 12
-    clock = pygame.time.Clock()
-
-
-    moving = True
-    while moving:
-
-        for i in pygame.event.get(): #
-            if i.type == pygame.QUIT:
-                moving = False
+for _ in range(num_circles):
+    radius = random.randint(10, 20)
+    x = random.randint(radius, window_width - radius)
+    y = random.randint(radius, window_height - radius)
+    color = (0,0,0)
+    circles.append(Circle(radius, x, y, color))
+    velocities.append((random.choice([-7, 5]), random.choice([-7, 5])))
 
 
+clock = pygame.time.Clock()
+moving = True
 
-        screen.fill((153, 204, 255)) 
+
+while moving:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            moving = False
+
+    screen.fill(bg_color)
 
 
+    #Just want to organize vx, vy
+
+    for i, circle in enumerate(circles):
+        vx, vy = velocities[i]
         circle.move(vx, vy)
 
-        #if circle go beyond radius, then stop it by those conditions
-
-        if circle.x - circle.radius < 0 or circle.x + circle.radius > window_width: 
-            vx = -vx
+        if circle.x - circle.radius < 0 or circle.x + circle.radius > window_width:
+            velocities[i] = (-vx, vy)
         if circle.y - circle.radius < 0 or circle.y + circle.radius > window_height:
-            vy = -vy
+            velocities[i] = (vx, -vy)
+
+        circle.draw(screen)
+
+    
+    pygame.display.flip()
+    clock.tick(30)
 
 
-        circle.draw(screen, (0, 0, 0))  
-
-        pygame.display.flip()
-
-        clock.tick(60)
-
-    pygame.quit()
-    sys.exit()
+pygame.quit()
+sys.exit()
