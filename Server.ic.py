@@ -1,35 +1,64 @@
 import socket
-import sys
-from pyexpat.errors import messages
+import threading
 
-HOST = '0.0.0.0'
-PORT = 1234
+HOST = '127.0.0.1'
+PORT = 12342
 
-try:
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((HOST, PORT))
-    s.listen()
-    print("Socket created")
-    print("Socket bound and listening")
-except OSError as msg:
-    s = None
-    print(f"Error creating socket: {msg}")
-    exit(1)
+clients = []
+nicknames = []
 
-conn, addr = s.accept()
-print('Connection accepted from ', addr)
+# Function to broadcast messages to all clients
+def broadcast(message):
+    for client in clients:
+        client.send(message)
 
-with conn:
+# Function to handle messages from a client
+def handle(client):
     while True:
-        data = conn.recv(1024)
-        if not data:
-            print("Connection closed by client")
+        try:
+            # Receive the message from the client
+            message = client.recv(1024).decode()
+            if not message:
+                break
+            index = clients.index(client)
+            nickname = nicknames[index]
+            # Prepend the sender's nickname to the message
+            formatted_message = f"{nickname}: {message}"
+            broadcast(formatted_message.encode())
+        except:
+            # Remove the client and notify others on error
+            index = clients.index(client)
+            nickname = nicknames[index]
+            clients.remove(client)
+            client.close()
+            nicknames.remove(nickname)
+            broadcast(f"{nickname} has left the chat!\n".encode())
             break
 
-        message_received = data.decode().strip()
-        print(f"Client: {message_received}")
+# Function to accept and manage new clients
+def receive():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
+        server.bind((HOST, PORT))
+        server.listen()
+        print(f"Server started on {HOST}:{PORT}")
 
-        message_to_send = input("You (Server): ")
-        conn.send((message_to_send + "\n").encode())
+        while True:
+            client, address = server.accept()
+            print(f"Connected with {str(address)}")
 
-s.close()
+            # Request and store the nickname
+            client.send("NICK".encode())
+            nickname = client.recv(1024).decode()
+            nicknames.append(nickname)
+            clients.append(client)
+
+            print(f"Nickname is {nickname}")
+            broadcast(f"{nickname} has joined the chat!\n".encode())
+            client.send("Connected to the server!\n".encode())
+
+            # Start a new thread for handling the client
+            thread = threading.Thread(target=handle, args=(client,))
+            thread.start()
+
+if __name__ == "__main__":
+    receive()
