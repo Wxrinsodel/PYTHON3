@@ -25,12 +25,11 @@ def scale(x, y):
     scale_y = h / 4
     return int(w / 2 + x * scale_x), int(h / 2 - y * scale_y)
 
-# Function to plot y = x
-def plot_y_equals_x():
-    for x in range(-4, 5):
-        y = x
+#function to plot y = x^2
+def plot_y_equals_x_squared():
+    for x in range(-2, 3):
+        y = x ** 2
         pygame.draw.circle(screen, (0, 255, 0), scale(x, y), 2)
-
 
 running = True
 
@@ -41,7 +40,7 @@ while running:
             break
 
     screen.fill((0, 0, 0))
-    plot_y_equals_x()
+    plot_y_equals_x_squared()
     pygame.display.flip()
    
 
