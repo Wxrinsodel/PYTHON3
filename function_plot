@@ -1,3 +1,4 @@
+
 import pygame
 import math
 import random
@@ -19,6 +20,18 @@ h = 600
 screen = pygame.display.set_mode((w, h))
 pygame.display.set_caption("Draw graph")
 
+def scale(x, y):
+    scale_x = w / 8
+    scale_y = h / 4
+    return int(w / 2 + x * scale_x), int(h / 2 - y * scale_y)
+
+# Function to plot y = x
+def plot_y_equals_x():
+    for x in range(-4, 5):
+        y = x
+        pygame.draw.circle(screen, (0, 255, 0), scale(x, y), 2)
+
+
 running = True
 
 while running:
@@ -28,13 +41,8 @@ while running:
             break
 
     screen.fill((0, 0, 0))
-
-    for x in range(w):
-        x = random.randint(0, w)
-        y = random.randint(0, h)
-        screen.set_at((x, y), (255, 255, 255))
-        #pygame.draw.line(screen, (0, 255, 0), (10, 10), (300, 300))
-
+    plot_y_equals_x()
     pygame.display.flip()
+   
 
 pygame.quit()
