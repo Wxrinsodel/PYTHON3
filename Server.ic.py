@@ -4,12 +4,21 @@ import threading
 HOST = '127.0.0.1'
 PORT = 12342
 
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+server.bind((HOST, PORT))
+server.listen()
+
+
+class Client:
+    def __init__(self, connected_socket, ):
+        pass
 clients = []
 nicknames = []
 
 # Function to broadcast messages to all clients
-def broadcast(message):
+def broadcast(message, author):
     for client in clients:
+        
         client.send(message)
 
 # Function to handle messages from a client
@@ -37,11 +46,7 @@ def handle(client):
 
 # Function to accept and manage new clients
 def receive():
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
-        server.bind((HOST, PORT))
-        server.listen()
         print(f"Server started on {HOST}:{PORT}")
-
         while True:
             client, address = server.accept()
             print(f"Connected with {str(address)}")
@@ -52,7 +57,7 @@ def receive():
             nicknames.append(nickname)
             clients.append(client)
 
-            print(f"Nickname is {nickname}")
+            print(f"Nickname of the client is {nickname}")
             broadcast(f"{nickname} has joined the chat!\n".encode())
             client.send("Connected to the server!\n".encode())
 
