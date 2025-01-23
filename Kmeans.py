@@ -21,3 +21,9 @@ def create_data_points(centers, num_points_per_center):
 
 num_points_per_center = 300 
 data_points = create_data_points(centers, num_points_per_center)
+
+plt.scatter([p[0] for p in data_points], [p[1] for p in data_points], s=5) # s = second
+plt.title("Data Points")
+plt.xlabel("X-coordinate")
+plt.ylabel("Y-coordinate")
+plt.show()
