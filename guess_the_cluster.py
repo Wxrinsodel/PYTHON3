@@ -28,11 +28,11 @@ def custom_kmeans(data, k, max_iters=100):
     return labels, centroids
 
 
-n_clusters = 3 
+n_clusters = 4
 cluster_labels, centroids = custom_kmeans(points, n_clusters)
 
 
-custom_colors = ['pink', 'green', 'purple'] 
+custom_colors = ['pink', 'green', 'purple', 'blue'] 
 
 plt.figure(figsize=(10, 6))
 scatter = plt.scatter(points[:, 0], points[:, 1], c=[custom_colors[label] for label in cluster_labels], s=5)
